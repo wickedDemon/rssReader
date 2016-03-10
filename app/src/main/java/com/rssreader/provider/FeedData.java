@@ -49,7 +49,7 @@ public class FeedData {
 
         public static final String[][] COLUMNS = {{ID, TYPE_PRIMARY_KEY}, {ID_REF, TYPE_EXTERNAL_ID},
             {NAME, TYPE_TEXT}, {DESCRIPTION, TYPE_TEXT}, {URL, TYPE_TEXT_UNIQUE}, {IMAGE_URL, TYPE_BLOB},
-            {PUB_DATE, TYPE_TEXT}, {FOREIGN_KEY_CONSTRAINTS(), ""}};
+            {PUB_DATE, TYPE_INT}, {FOREIGN_KEY_CONSTRAINTS(), ""}};
 
         public static final String FOREIGN_KEY_CONSTRAINTS() {
             return new StringBuilder().append("FOREIGN KEY").append('(').append(ID_REF).append(')')

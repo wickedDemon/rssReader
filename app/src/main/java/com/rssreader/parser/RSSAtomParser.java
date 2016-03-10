@@ -2,6 +2,7 @@ package com.rssreader.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -17,6 +18,7 @@ import com.rssreader.MainApplication;
 import com.rssreader.provider.FeedData;
 import com.rssreader.utils.HtmlUtils;
 import com.rssreader.utils.ImageUtils;
+import com.rssreader.utils.TimeUtils;
 
 public class RSSAtomParser {
 
@@ -47,7 +49,7 @@ public class RSSAtomParser {
 
         private String feedTitle;
         private String feedLink;
-        private String feedDate;
+        private Date feedDate;
         private String feedImage;
 
         private StringBuilder mImageUrl;
@@ -121,7 +123,7 @@ public class RSSAtomParser {
                     mLink = null;
                 }
                 if (feedDate == null && mDate != null) {
-                    feedDate = mDate.toString();
+                    feedDate = TimeUtils.parseUpdateDate(mDate.toString(), true);
                     mDate = null;
                 }
                 if (feedImage == null && mImageUrl != null) {
@@ -161,12 +163,13 @@ public class RSSAtomParser {
             }  else if (TAG_UPDATED.equals(localName)) {
                 pubDateTag  = false;
             }  else if (TAG_ITEM.equals(localName) || TAG_ENTRY.equals(localName)) {
+                Date entryTime = TimeUtils.parsePubdateDate(mDate != null ? mDate.toString() : null, true);
                 ContentValues values = new ContentValues();
                 values.put(FeedData.FeedEntries.ID_REF, feedId);
                 values.put(FeedData.FeedEntries.NAME, mTitle != null ? mTitle.toString() : null);
                 values.put(FeedData.FeedEntries.URL, mLink != null ? mLink.toString() : null);
                 values.put(FeedData.FeedEntries.DESCRIPTION, mDescription != null ? mDescription.toString() : null);
-                values.put(FeedData.FeedEntries.PUB_DATE, mDate != null ? mDate.toString() : null);
+                values.put(FeedData.FeedEntries.PUB_DATE, entryTime != null ? entryTime.getTime() : 0);
                 values.put(FeedData.FeedEntries.IMAGE_URL, mImageUrl != null ? mImageUrl.toString() : null);
 
                 ContentResolver cr = context.getContentResolver();
@@ -188,11 +191,6 @@ public class RSSAtomParser {
             ContentValues values = new ContentValues();
             values.put(FeedData.FeedNews.NAME, feedTitle);
             values.put(FeedData.FeedNews.IMAGE_URL, feedImage);
-
-            ContentResolver cr = context.getContentResolver();
-            if (feedId != 0) {
-                cr.update(FeedData.FeedNews.CONTENT_URI(Integer.toString(feedId)), values, null, null);
-            }
             feedId = 0;
             feedTitle = null;
             feedLink = null;
@@ -201,6 +199,11 @@ public class RSSAtomParser {
             feedImage = null;
             feedLink = null;
             feedDate = null;
+            ContentResolver cr = context.getContentResolver();
+            if (feedId != 0) {
+                cr.update(FeedData.FeedNews.CONTENT_URI(Integer.toString(feedId)), values, null, null);
+            }
+
             feedTitle = null;
         }
 
@@ -208,15 +211,15 @@ public class RSSAtomParser {
         public void characters(char[] ch, int start, int length) throws SAXException {
             if (titleTag) {
                 mTitle.append(ch, start, length);
-            } if (feedLinkTag)
+            } else if (feedLinkTag) {
                 mLink.append(ch, start, length);
-            else if (imageUrlTag)
+            } else if (imageUrlTag) {
                 mImageUrl.append(ch, start, length);
-            else if (descriptionTag)
+            } else if (descriptionTag) {
                 mDescription.append(ch, start, length);
-            else if (pubDateTag)
+            } else if (pubDateTag) {
                 mDate.append(ch, start, length);
-
+            }
             super.characters(ch, start, length);
         }
 

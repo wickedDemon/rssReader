@@ -13,10 +13,13 @@ import com.rssreader.R;
 import com.rssreader.listener.ItemClickListener;
 import com.rssreader.provider.FeedData;
 import com.rssreader.utils.ImageUtils;
+import com.rssreader.utils.TimeUtils;
+
+import java.util.Date;
 
 public class FeedEntryAdapter extends BaseRecyclerViewAdapter<FeedEntryAdapter.ViewHolder> {
 
-    private int idPos, urlPos, namePos, imagePos, datePos;
+    private int namePos, imagePos, datePos;
 
     private ItemClickListener clickListener;
     private Context context;
@@ -94,17 +97,20 @@ public class FeedEntryAdapter extends BaseRecyclerViewAdapter<FeedEntryAdapter.V
     @Override
     public void onBindViewHolder(ViewHolder holder, final Cursor cursor, final int position) {
         holder.itemTitle.setText(cursor.getString(namePos));
-        holder.itemDate.setText(cursor.getString(datePos));
+        setElapsedTime(holder.itemDate, cursor.getLong(datePos));
         holder.setItemId(getItemId(position));
         ImageUtils.loadImageToVeiw(context, holder.itemImage, cursor.getString(imagePos), R.drawable.ic_no_image, 0, false);
+    }
+
+    private void setElapsedTime(TextView textView, long entryTime) {
+        long duration = new Date().getTime() - entryTime;
+        textView.setText(TimeUtils.getHumanReadableTimeDuration(duration) + " ago");
     }
 
     @Override
     public void reunit(Cursor cursor) {
         if (cursor != null) {
-            idPos = cursor.getColumnIndex(FeedData.FeedEntries.ID);
             namePos = cursor.getColumnIndex(FeedData.FeedEntries.NAME);
-            urlPos = cursor.getColumnIndex(FeedData.FeedEntries.URL);
             imagePos = cursor.getColumnIndex(FeedData.FeedEntries.IMAGE_URL);
             datePos = cursor.getColumnIndex(FeedData.FeedEntries.PUB_DATE);
         }
