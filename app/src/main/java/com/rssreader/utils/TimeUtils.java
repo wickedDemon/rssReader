@@ -20,6 +20,7 @@ public class TimeUtils {
             new SimpleDateFormat("yyyy-MM-dd", Locale.US)};
 
     private Date parseUpdateDate(String dateStr, boolean tryAllFormat) {
+        long mNow = new Date().getTime();
         for (DateFormat format : UPDATE_DATE_FORMATS) {
             try {
                 Date result = format.parse(dateStr);
@@ -28,14 +29,11 @@ public class TimeUtils {
                 Log.e(TAG, "Wrong update format");
             }
         }
-
-        if (tryAllFormat)
-            return parsePubdateDate(dateStr, false);
-        else
-            return null;
+        return tryAllFormat ? parsePubdateDate(dateStr, false) : null;
     }
 
     private Date parsePubdateDate(String dateStr, boolean tryAllFormat) {
+        long mNow = new Date().getTime();
         for (DateFormat format : PUBDATE_DATE_FORMATS) {
             try {
                 Date result = format.parse(dateStr);
@@ -44,10 +42,6 @@ public class TimeUtils {
                 Log.e(TAG, "Wrong pubdate format");
             }
         }
-
-        if (tryAllFormat)
-            return parseUpdateDate(dateStr, false);
-        else
-            return null;
+        return tryAllFormat ? parseUpdateDate(dateStr, false) : null;
     }
 }
