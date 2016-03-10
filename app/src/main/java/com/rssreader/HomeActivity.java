@@ -3,9 +3,11 @@ package com.rssreader;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -125,7 +127,7 @@ public class HomeActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         feedId = savedInstanceState.getLong(FEED_ID_PARAMETER);
         selectedTabIndex = savedInstanceState.getInt(TAB_INDEX_PARAMETER);
@@ -209,7 +211,7 @@ public class HomeActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 .setEndpoint(FeedlyService.FEEDLY_ENDPOINT)
                 .build();
         FeedlyService searchService = restAdapter.create(FeedlyService.class);
-        HashMap queryMap = new HashMap();
+        HashMap<String, String> queryMap = new HashMap<>();
         queryMap.put("query", query);
 
         searchService.searchFeeds(queryMap, new Callback<FeedlyResponse>() {

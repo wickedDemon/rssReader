@@ -10,9 +10,8 @@ public class FeedData {
 
     static final String TYPE_PRIMARY_KEY = "INTEGER PRIMARY KEY AUTOINCREMENT";
     static final String TYPE_EXTERNAL_ID = "INTEGER(7)";
-    static final String TYPE_TEXT = "TEXT";
     static final String TYPE_TEXT_UNIQUE = "TEXT UNIQUE";
-    static final String TYPE_DATE_TIME = "DATETIME";
+    static final String TYPE_TEXT = "TEXT";
     static final String TYPE_INT = "INT";
     static final String TYPE_BOOLEAN = "INTEGER(1)";
     static final String TYPE_BLOB = "BLOB";
@@ -31,7 +30,7 @@ public class FeedData {
 
         public static final Uri CONTENT_URI = Uri.parse(CONTENT_AUTHORITY + "/feednews");
 
-        public static final Uri CONTENT_URI(String feedId) {
+        public static Uri CONTENT_URI(String feedId) {
             return Uri.parse(CONTENT_AUTHORITY + "/feednews/" + feedId);
         }
     }
@@ -51,15 +50,13 @@ public class FeedData {
             {NAME, TYPE_TEXT}, {DESCRIPTION, TYPE_TEXT}, {URL, TYPE_TEXT_UNIQUE}, {IMAGE_URL, TYPE_BLOB},
             {PUB_DATE, TYPE_INT}, {FOREIGN_KEY_CONSTRAINTS(), ""}};
 
-        public static final String FOREIGN_KEY_CONSTRAINTS() {
-            return new StringBuilder().append("FOREIGN KEY").append('(').append(ID_REF).append(')')
-                    .append("REFERENCES ").append(FeedNews.TABLE_NAME).append('(').append(FeedNews.ID)
-                    .append(')').append(" ON DELETE CASCADE").toString();
+        public static String FOREIGN_KEY_CONSTRAINTS() {
+            return "FOREIGN KEY" + '(' + ID_REF + ')' + "REFERENCES " + FeedNews.TABLE_NAME + '(' + FeedNews.ID + ')' + " ON DELETE CASCADE";
         }
 
         public static final Uri CONTENT_URI = Uri.parse(CONTENT_AUTHORITY + "/feedentries");
 
-        public static final Uri CONTENT_URI(String entryId) {
+        public static Uri CONTENT_URI(String entryId) {
             return Uri.parse(CONTENT_AUTHORITY + "/feedentries/" + entryId);
         }
     }

@@ -82,12 +82,8 @@ public class FeedListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-        String whereClause = null;
-        if (favoriteMode) {
-            whereClause = FeedData.FeedNews.IS_FAVORITE + "=" + 1;
-        }
-        CursorLoader cursorLoader = new CursorLoader(getActivity(), FeedData.FeedNews.CONTENT_URI, null, whereClause, null, null);
-        return cursorLoader;
+        String whereClause = favoriteMode ? FeedData.FeedNews.IS_FAVORITE + "=" + 1 : null;
+        return new CursorLoader(getActivity(), FeedData.FeedNews.CONTENT_URI, null, whereClause, null, null);
     }
 
     @Override

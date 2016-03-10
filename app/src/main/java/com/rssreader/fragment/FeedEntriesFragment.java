@@ -92,11 +92,10 @@ public class FeedEntriesFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle bundle) {
-        CursorLoader cursorLoader  = new CursorLoader(getActivity(),
+        return new CursorLoader(getActivity(),
                 FeedData.FeedEntries.CONTENT_URI(Long.toString(currentId)).buildUpon()
                         .appendQueryParameter(QUERY_LIMIT , "0, 10")
                         .build(), null, null, null, null);
-        return cursorLoader;
     }
 
     @Override

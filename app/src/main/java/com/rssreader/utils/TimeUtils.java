@@ -69,7 +69,7 @@ public class TimeUtils {
         return date;
     }
 
-    public static String getPeriodTime(Period period) {
+    private static String getPeriodTime(Period period) {
         PeriodFormatterBuilder builder = new PeriodFormatterBuilder()
                 .appendDays().appendSuffix(" day ")
                 .appendHours().appendSuffix(" hour ")
@@ -78,7 +78,7 @@ public class TimeUtils {
         return builder.toFormatter().print(period).trim();
     }
 
-    public static DurationFieldType[] getTimeUnitsType(long duration) {
+    private static DurationFieldType[] getTimeUnitsType(long duration) {
         Duration durationWrap = new Duration(duration);
         if (durationWrap.getStandardDays() > 0) {
             return new DurationFieldType[] {

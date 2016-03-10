@@ -44,7 +44,7 @@ public class FeedDataContentProvider extends ContentProvider{
             long feedId = Long.parseLong(uri.getLastPathSegment());
             where = FeedData.FeedNews.ID + "=" + feedId;
             if (whereClause != null && !whereClause.isEmpty())
-                where += "AND" + whereClause;
+                where += " AND " + whereClause;
             oldId = database.delete(FeedData.FeedNews.TABLE_NAME, where, whereArgs);
             break;
         case URL_FEED_ENTRIES:
@@ -54,7 +54,7 @@ public class FeedDataContentProvider extends ContentProvider{
             long entryId = Long.parseLong(uri.getLastPathSegment());
             where = FeedData.FeedEntries.ID_REF + "=" + entryId;//!!!
             if (whereClause != null && !whereClause.isEmpty())
-                where += "AND" + whereClause;
+                where += " AND " + whereClause;
             oldId = database.delete(FeedData.FeedEntries.TABLE_NAME, where, whereArgs);
             break;
         default:
@@ -69,7 +69,7 @@ public class FeedDataContentProvider extends ContentProvider{
     }
 
     @Override
-    public String getType(Uri uri) {//I'll write later
+    public String getType(Uri uri) {
         return null;
     }
 
@@ -135,7 +135,6 @@ public class FeedDataContentProvider extends ContentProvider{
 
         SQLiteDatabase database = mDatabaseHelper.getReadableDatabase();
 
-        //Cursor cursor = queryBuilder.query(database, projection, selection, selectionArgs, null, null, sortOrder);
         Cursor cursor = queryBuilder.query(database, projection, selection, selectionArgs, null, null, sortOrder, limit);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
@@ -158,7 +157,7 @@ public class FeedDataContentProvider extends ContentProvider{
             feedId = Long.parseLong(uri.getLastPathSegment());
             where.append(FeedData.FeedNews.ID).append('=').append(feedId);
             if (selection != null && !selection.isEmpty())
-                where.append("AND" + selection);
+                where.append(" AND ").append(selection);
             newId = database.update(FeedData.FeedNews.TABLE_NAME, values, where.toString(), selectionArgs);
             break;
         case URL_FEED_ENTRIES:
@@ -168,7 +167,7 @@ public class FeedDataContentProvider extends ContentProvider{
             feedId = Long.parseLong(uri.getLastPathSegment());
             where.append(FeedData.FeedEntries.ID).append('=').append(feedId);
             if (selection != null && !selection.isEmpty())
-                where.append("AND" + selection);
+                where.append(" AND ").append(selection);
             newId = database.update(FeedData.FeedEntries.TABLE_NAME, values, where.toString(), selectionArgs);
             break;
         default:

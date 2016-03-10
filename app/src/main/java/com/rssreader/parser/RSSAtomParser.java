@@ -74,62 +74,77 @@ public class RSSAtomParser {
         @Override
         public void startElement(String uri, String localName, String qName,
                 Attributes attributes) throws SAXException {
-            if (TAG_TITLE.equals(localName)) {
-                titleTag = true;
-                mTitle = new StringBuilder();
-            } else if (TAG_LINK.equals(localName)) {
-                String href = attributes.getValue("", ATTRIBUTE_HREF);
-                mLink = new StringBuilder();
-                if (!TextUtils.isEmpty(href)) {
-                    mLink.append(href);
-                    feedLinkTag = false;
-                } else {
-                    feedLinkTag = true;
-                }
-                feedLinkTag = true;
-            } else if (TAG_IMAGE.equals(localName)) {
-                String href = attributes.getValue("", ATTRIBUTE_HREF);
-                if (mImageUrl == null && href != null) {
-                    mImageUrl = new StringBuilder();
-                    if (ImageUtils.isCorrectImage(href)) {
-                        mImageUrl.append(href);
+            switch (localName) {
+                case TAG_TITLE:
+                    titleTag = true;
+                    mTitle = new StringBuilder();
+                    break;
+                case TAG_LINK: {
+                    String href = attributes.getValue("", ATTRIBUTE_HREF);
+                    mLink = new StringBuilder();
+                    if (!TextUtils.isEmpty(href)) {
+                        mLink.append(href);
+                        feedLinkTag = false;
+                    } else {
+                        feedLinkTag = true;
                     }
+                    feedLinkTag = true;
+                    break;
                 }
-            } else if (TAG_DESCRIPTION.equals(localName) || TAG_CONTENT.equals(localName) || TAG_ENCODED_CONTENT.equals(localName)) {
-                descriptionTag = true;
-                mDescription = new StringBuilder();
-            } else if (TAG_URL.equals(localName)) {
-                mImageUrl = new StringBuilder();
-                imageUrlTag = true;
-            } else if (TAG_ENCLOSURE.equals(localName)) {
-                String url = attributes.getValue("", URL_ATTRIBUTE);
-                if (url != null && ImageUtils.isCorrectImage(url)) {
+                case TAG_IMAGE: {
+                    String href = attributes.getValue("", ATTRIBUTE_HREF);
+                    if (mImageUrl == null && href != null) {
+                        mImageUrl = new StringBuilder();
+                        if (ImageUtils.isCorrectImage(href)) {
+                            mImageUrl.append(href);
+                        }
+                    }
+                    break;
+                }
+                case TAG_DESCRIPTION:
+                case TAG_CONTENT:
+                case TAG_ENCODED_CONTENT:
+                    descriptionTag = true;
+                    mDescription = new StringBuilder();
+                    break;
+                case TAG_URL:
                     mImageUrl = new StringBuilder();
-                    mImageUrl.append(attributes.getValue("", URL_ATTRIBUTE));
-                }
-            } else if (TAG_PUBDATE.equals(localName)) {
-                pubDateTag  = true;
-                mDate = new StringBuilder();
-            } else if (TAG_UPDATED.equals(localName)) {
-                pubDateTag  = true;
-                mDate = new StringBuilder();
-            } else if (TAG_ITEM.equals(localName) || TAG_ENTRY.equals(localName)) {
-                if (feedTitle == null) {
-                    feedTitle = mTitle.toString();
-                    mTitle = null;
-                }
-                if (feedLink == null) {
-                    feedLink = mLink.toString();
-                    mLink = null;
-                }
-                if (feedDate == null && mDate != null) {
-                    feedDate = TimeUtils.parseUpdateDate(mDate.toString(), true);
-                    mDate = null;
-                }
-                if (feedImage == null && mImageUrl != null) {
-                    feedImage = mImageUrl.toString();
-                    mImageUrl = null;
-                }
+                    imageUrlTag = true;
+                    break;
+                case TAG_ENCLOSURE:
+                    String url = attributes.getValue("", URL_ATTRIBUTE);
+                    if (url != null && ImageUtils.isCorrectImage(url)) {
+                        mImageUrl = new StringBuilder();
+                        mImageUrl.append(attributes.getValue("", URL_ATTRIBUTE));
+                    }
+                    break;
+                case TAG_PUBDATE:
+                    pubDateTag = true;
+                    mDate = new StringBuilder();
+                    break;
+                case TAG_UPDATED:
+                    pubDateTag = true;
+                    mDate = new StringBuilder();
+                    break;
+                case TAG_ITEM:
+                case TAG_ENTRY:
+                    if (feedTitle == null) {
+                        feedTitle = mTitle.toString();
+                        mTitle = null;
+                    }
+                    if (feedLink == null) {
+                        feedLink = mLink.toString();
+                        mLink = null;
+                    }
+                    if (feedDate == null && mDate != null) {
+                        feedDate = TimeUtils.parseUpdateDate(mDate.toString(), true);
+                        mDate = null;
+                    }
+                    if (feedImage == null && mImageUrl != null) {
+                        feedImage = mImageUrl.toString();
+                        mImageUrl = null;
+                    }
+                    break;
             }
             super.startElement(uri, localName, qName, attributes);
         }
@@ -137,49 +152,56 @@ public class RSSAtomParser {
         @Override
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
-            if (TAG_TITLE.equals(localName)) {
-                titleTag = false;
-            } else if (TAG_LINK.equals(localName)) {
-                feedLinkTag = false;
-            } else if (TAG_DESCRIPTION.equals(localName) || TAG_CONTENT.equals(localName) || TAG_ENCODED_CONTENT.equals(localName)) {
-                String improvedContent;
-                ArrayList<String> imagesUrls;
-                if (mDescription != null) {
-                    improvedContent = HtmlUtils.improveHtmlContent(mDescription.toString());
-                    imagesUrls = HtmlUtils.getImageURLs(improvedContent);
-                    if (!imagesUrls.isEmpty() && TextUtils.isEmpty(mImageUrl)) {
-                        String mainImage = HtmlUtils.getMainImageURL(imagesUrls);
-                        if (mainImage != null && ImageUtils.isCorrectImage(mainImage)) {
-                            mImageUrl = new StringBuilder();
-                            mImageUrl.append(HtmlUtils.getMainImageURL(imagesUrls));
+            switch (localName) {
+                case TAG_TITLE:
+                    titleTag = false;
+                    break;
+                case TAG_LINK:
+                    feedLinkTag = false;
+                    break;
+                case TAG_DESCRIPTION:
+                case TAG_CONTENT:
+                case TAG_ENCODED_CONTENT:
+                    String improvedContent;
+                    ArrayList<String> imagesUrls;
+                    if (mDescription != null) {
+                        improvedContent = HtmlUtils.improveHtmlContent(mDescription.toString());
+                        imagesUrls = HtmlUtils.getImageURLs(improvedContent);
+                        if (!imagesUrls.isEmpty() && TextUtils.isEmpty(mImageUrl)) {
+                            String mainImage = HtmlUtils.getMainImageURL(imagesUrls);
+                            if (mainImage != null && ImageUtils.isCorrectImage(mainImage)) {
+                                mImageUrl = new StringBuilder();
+                                mImageUrl.append(HtmlUtils.getMainImageURL(imagesUrls));
+                            }
                         }
                     }
-                }
-                descriptionTag = false;
-            } else if (TAG_URL.equals(localName)) {
-                imageUrlTag = false;
-            } else if (TAG_PUBDATE.equals(localName)) {
-                pubDateTag  = false;
-            }  else if (TAG_UPDATED.equals(localName)) {
-                pubDateTag  = false;
-            }  else if (TAG_ITEM.equals(localName) || TAG_ENTRY.equals(localName)) {
-                Date entryTime = TimeUtils.parsePubdateDate(mDate != null ? mDate.toString() : null, true);
-                ContentValues values = new ContentValues();
-                values.put(FeedData.FeedEntries.ID_REF, feedId);
-                values.put(FeedData.FeedEntries.NAME, mTitle != null ? mTitle.toString() : null);
-                values.put(FeedData.FeedEntries.URL, mLink != null ? mLink.toString() : null);
-                values.put(FeedData.FeedEntries.DESCRIPTION, mDescription != null ? mDescription.toString() : null);
-                values.put(FeedData.FeedEntries.PUB_DATE, entryTime != null ? entryTime.getTime() : 0);
-                values.put(FeedData.FeedEntries.IMAGE_URL, mImageUrl != null ? mImageUrl.toString() : null);
+                    descriptionTag = false;
+                    break;
+                case TAG_URL:
+                    imageUrlTag = false;
+                    break;
+                case TAG_PUBDATE:
+                    pubDateTag = false;
+                    break;
+                case TAG_UPDATED:
+                    pubDateTag = false;
+                    break;
+                case TAG_ITEM:
+                case TAG_ENTRY:
+                    Date entryTime = TimeUtils.parsePubdateDate(mDate != null ? mDate.toString() : null, true);
+                    ContentValues values = new ContentValues();
+                    values.put(FeedData.FeedEntries.ID_REF, feedId);
+                    values.put(FeedData.FeedEntries.NAME, mTitle != null ? mTitle.toString() : null);
+                    values.put(FeedData.FeedEntries.URL, mLink != null ? mLink.toString() : null);
+                    values.put(FeedData.FeedEntries.DESCRIPTION, mDescription != null ? mDescription.toString() : null);
+                    values.put(FeedData.FeedEntries.PUB_DATE, entryTime != null ? entryTime.getTime() : 0);
+                    values.put(FeedData.FeedEntries.IMAGE_URL, mImageUrl != null ? mImageUrl.toString() : null);
 
-                ContentResolver cr = context.getContentResolver();
-                cr.insert(FeedData.FeedEntries.CONTENT_URI, values);
+                    ContentResolver cr = context.getContentResolver();
+                    cr.insert(FeedData.FeedEntries.CONTENT_URI, values);
 
-                mLink = null;
-                mDate = null;
-                mTitle = null;
-                mImageUrl = null;
-                mDescription = null;
+                    clearEntryTags();
+                    break;
             }
 
             super.endElement(uri, localName, qName);
@@ -188,23 +210,7 @@ public class RSSAtomParser {
         @Override
         public void endDocument() throws SAXException {
             super.endDocument();
-            ContentValues values = new ContentValues();
-            values.put(FeedData.FeedNews.NAME, feedTitle);
-            values.put(FeedData.FeedNews.IMAGE_URL, feedImage);
-            feedId = 0;
-            feedTitle = null;
-            feedLink = null;
-            mImageUrl = null;
-
-            feedImage = null;
-            feedLink = null;
-            feedDate = null;
-            ContentResolver cr = context.getContentResolver();
-            if (feedId != 0) {
-                cr.update(FeedData.FeedNews.CONTENT_URI(Integer.toString(feedId)), values, null, null);
-            }
-
-            feedTitle = null;
+            clearFeedTags();
         }
 
         @Override
@@ -221,6 +227,26 @@ public class RSSAtomParser {
                 mDate.append(ch, start, length);
             }
             super.characters(ch, start, length);
+        }
+
+        private void clearFeedTags() {
+            feedId = 0;
+            feedTitle = null;
+            feedLink = null;
+            mImageUrl = null;
+
+            feedImage = null;
+            feedLink = null;
+            feedDate = null;
+            feedTitle = null;
+        }
+
+        private void clearEntryTags() {
+            mLink = null;
+            mDate = null;
+            mTitle = null;
+            mImageUrl = null;
+            mDescription = null;
         }
 
         public static void setFeedId(int id) {
