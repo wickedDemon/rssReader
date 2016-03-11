@@ -32,6 +32,11 @@ public class TimeUtils {
             {"ICT", "+0700"}};
 
     public static Date parseUpdateDate(String dateStr, boolean tryAllFormat) {
+        if (dateStr == null) {
+            Log.e(TAG, "Wrong string date format");
+            return null;
+        }
+
         long mNow = new Date().getTime();
         for (DateFormat format : UPDATE_DATE_FORMATS) {
             try {
@@ -45,6 +50,11 @@ public class TimeUtils {
     }
 
     public static Date parsePubdateDate(String dateStr, boolean tryAllFormat) {
+        if (dateStr == null) {
+            Log.e(TAG, "Wrong string date format");
+            return null;
+        }
+
         long mNow = new Date().getTime();
         for (DateFormat format : PUBDATE_DATE_FORMATS) {
             try {
@@ -71,9 +81,9 @@ public class TimeUtils {
 
     private static String getPeriodTime(Period period) {
         PeriodFormatterBuilder builder = new PeriodFormatterBuilder()
-                .appendDays().appendSuffix(" day ")
-                .appendHours().appendSuffix(" hour ")
-                .appendMinutes().appendSuffix(" min ")
+                .appendDays().appendSuffix(" day ", " days ")
+                .appendHours().appendSuffix(" hour ", " hours ")
+                .appendMinutes().appendSuffix(" min ", " mins ")
                 .appendSeconds().appendSuffix(" less than sec ");
         return builder.toFormatter().print(period).trim();
     }
