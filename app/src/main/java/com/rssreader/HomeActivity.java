@@ -29,6 +29,7 @@ import com.rssreader.utils.Transformation;
 import com.rssreader.utils.Utils;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -211,7 +212,7 @@ public class HomeActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 .setEndpoint(FeedlyService.FEEDLY_ENDPOINT)
                 .build();
         FeedlyService searchService = restAdapter.create(FeedlyService.class);
-        HashMap<String, String> queryMap = new HashMap<>();
+        Map<String, String> queryMap = new HashMap<>();
         queryMap.put("query", query);
 
         searchService.searchFeeds(queryMap, new Callback<FeedlyResponse>() {

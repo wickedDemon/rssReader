@@ -3,6 +3,7 @@ package com.rssreader.parser;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -162,11 +163,9 @@ public class RSSAtomParser {
                 case TAG_DESCRIPTION:
                 case TAG_CONTENT:
                 case TAG_ENCODED_CONTENT:
-                    String improvedContent;
-                    ArrayList<String> imagesUrls;
                     if (mDescription != null) {
-                        improvedContent = HtmlUtils.improveHtmlContent(mDescription.toString());
-                        imagesUrls = HtmlUtils.getImageURLs(improvedContent);
+                        String improvedContent = HtmlUtils.improveHtmlContent(mDescription.toString());
+                        List<String> imagesUrls = HtmlUtils.getImageURLs(improvedContent);
                         if (!imagesUrls.isEmpty() && TextUtils.isEmpty(mImageUrl)) {
                             String mainImage = HtmlUtils.getMainImageURL(imagesUrls);
                             if (mainImage != null && ImageUtils.isCorrectImage(mainImage)) {

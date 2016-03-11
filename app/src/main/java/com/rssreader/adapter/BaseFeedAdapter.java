@@ -26,7 +26,6 @@ public class BaseFeedAdapter extends BaseRecyclerViewAdapter<BaseFeedAdapter.Vie
     private Context context;
     private boolean favoriteMode;
 
-
     public BaseFeedAdapter(Context context, boolean favoriteMode) {
         super(context, null);
         this.context = context;

@@ -3,6 +3,7 @@ package com.rssreader.utils;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,8 +48,8 @@ public class HtmlUtils {
         return content;
     }
 
-    public static ArrayList<String> getImageURLs(String content) {
-        ArrayList<String> images = new ArrayList<>();
+    public static List<String> getImageURLs(String content) {
+        List<String> images = new ArrayList<>();
 
         if (!TextUtils.isEmpty(content)) {
             Matcher matcher = IMG_PATTERN.matcher(content);
@@ -61,7 +62,7 @@ public class HtmlUtils {
         return images;
     }
 
-    public static String getMainImageURL(ArrayList<String> imgUrls) {
+    public static String getMainImageURL(List<String> imgUrls) {
         for (String imgUrl : imgUrls) {
             if (ImageUtils.isCorrectImage(imgUrl)) {
                 return imgUrl;
