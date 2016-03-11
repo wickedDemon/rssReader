@@ -103,7 +103,7 @@ public class BaseFeedAdapter extends BaseRecyclerViewAdapter<BaseFeedAdapter.Vie
     public void onBindViewHolder(ViewHolder holder, final Cursor cursor, final int position) {
         holder.feedTitle.setText(cursor.getString(titlePos));
         holder.feedUrl.setText(cursor.getString(urlPos));
-        ImageUtils.loadImageToVeiw(context, holder.feedImage, cursor.getString(imagePos), R.drawable.ic_no_image, 0, false);
+        ImageUtils.loadImageToVeiw(context, holder.feedImage, cursor.getString(imagePos), R.drawable.ic_no_image, 2, false);
 
         int isFavorite = cursor.getInt(isFavoritePos);
         final long itemId = getItemId(position);

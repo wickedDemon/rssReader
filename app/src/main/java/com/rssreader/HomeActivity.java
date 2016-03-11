@@ -190,12 +190,12 @@ public class HomeActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public boolean onSuggestionClick(int position) {
         Cursor cursor = (Cursor) searchView.getSuggestionsAdapter().getItem(position);
-        String feedName = cursor.getString(4);
         invalidateOptionsMenu();
 
         ContentValues values = new ContentValues();
-        values.put(FeedData.FeedNews.NAME, feedName);
+        values.put(FeedData.FeedNews.NAME, cursor.getString(4));
         values.put(FeedData.FeedNews.URL, cursor.getString(1));
+        values.put(FeedData.FeedNews.IMAGE_URL, cursor.getString(2));
 
         ContentResolver cr = getContentResolver();
         cr.insert(FeedData.FeedNews.CONTENT_URI, values);
