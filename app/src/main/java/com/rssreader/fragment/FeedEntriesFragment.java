@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,8 +48,25 @@ public class FeedEntriesFragment extends Fragment implements LoaderManager.Loade
         if (arguments != null) {
             currentId = arguments.getLong(FEED_ID_PARAMETER);
         }
-
         getLoaderManager().initLoader(LOADER_ID, null, this);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        String where = FeedData.FeedNews.ID + "=" + currentId;
+        ContentResolver cr = getActivity().getContentResolver();
+        Cursor cursor = cr.query(FeedData.FeedNews.CONTENT_URI, new String[]{FeedData.FeedNews.NAME}, where, null, null);
+
+        String feedName = null;
+        if (cursor.moveToFirst()) {
+            feedName = cursor.getString(0);
+        }
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null && activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setTitle(feedName != null ? feedName : getString(R.string.feed_data_title));
+        }
     }
 
     @Override
