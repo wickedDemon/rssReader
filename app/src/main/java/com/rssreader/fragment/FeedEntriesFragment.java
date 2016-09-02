@@ -12,8 +12,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +22,7 @@ import com.rssreader.adapter.FeedEntryAdapter;
 import com.rssreader.R;
 import com.rssreader.listener.ItemClickListener;
 import com.rssreader.provider.FeedData;
-import com.rssreader.view.ListDivider;
+import com.rssreader.view.SpacesItemDecoration;
 
 public class FeedEntriesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -32,6 +32,7 @@ public class FeedEntriesFragment extends Fragment implements LoaderManager.Loade
 
     private long currentId;
     private FeedEntryAdapter adapter;
+    private StaggeredGridLayoutManager stagaggeredGridLayoutManager;
 
     public static FeedEntriesFragment createInstance(long id) {
         FeedEntriesFragment fragment = new FeedEntriesFragment();
@@ -80,10 +81,10 @@ public class FeedEntriesFragment extends Fragment implements LoaderManager.Loade
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
+        stagaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, 1);
+        recyclerView.setLayoutManager(stagaggeredGridLayoutManager);
 
-        final RecyclerView.ItemDecoration itemDecoration = new ListDivider(getActivity());
+        SpacesItemDecoration itemDecoration = new SpacesItemDecoration(16);
         recyclerView.addItemDecoration(itemDecoration);
 
         adapter = new FeedEntryAdapter(getActivity());

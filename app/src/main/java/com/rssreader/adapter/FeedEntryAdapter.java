@@ -32,7 +32,7 @@ public class FeedEntryAdapter extends BaseRecyclerViewAdapter<FeedEntryAdapter.V
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_entry_feed, parent, false);
+                .inflate(R.layout.stagged_grid_item, parent, false);
         ViewHolder holder = new ViewHolder(view);
         holder.setClickListener(new ItemClickListener() {
             @Override
@@ -63,9 +63,9 @@ public class FeedEntryAdapter extends BaseRecyclerViewAdapter<FeedEntryAdapter.V
 
         public ViewHolder(View view) {
             super(view);
-            itemTitle = (TextView) view.findViewById(R.id.entryTitle);
-            itemDate = (TextView) view.findViewById(R.id.entryDate);
-            itemImage = (ImageView) view.findViewById(R.id.entryImage);
+            itemTitle = (TextView) view.findViewById(R.id.feedEntryTitle);
+            itemDate = (TextView) view.findViewById(R.id.feedEntryDate);
+            itemImage = (ImageView) view.findViewById(R.id.feedEntryImage);
             view.setOnLongClickListener(this);
             view.setOnClickListener(this);
         }
