@@ -15,6 +15,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,7 +35,6 @@ public class FeedEntriesFragment extends Fragment implements LoaderManager.Loade
 
     private long currentId;
     private FeedEntryAdapter adapter;
-    private StaggeredGridLayoutManager stagaggeredGridLayoutManager;
 
     public static FeedEntriesFragment createInstance(long id) {
         FeedEntriesFragment fragment = new FeedEntriesFragment();
@@ -49,7 +51,17 @@ public class FeedEntriesFragment extends Fragment implements LoaderManager.Loade
         if (arguments != null) {
             currentId = arguments.getLong(FEED_ID_PARAMETER);
         }
+        setHasOptionsMenu(true);
         getLoaderManager().initLoader(LOADER_ID, null, this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem viewItem = menu.findItem(R.id.action_view);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        viewItem.setVisible(false);
+        searchItem.setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -66,7 +78,18 @@ public class FeedEntriesFragment extends Fragment implements LoaderManager.Loade
         }
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (activity != null && activity.getSupportActionBar() != null) {
-            activity.getSupportActionBar().setTitle(feedName != null ? feedName : getString(R.string.feed_data_title));
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            activity.getSupportActionBar().setTitle(feedName != null ? feedName :
+                    getString(R.string.feed_data_title));
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null && activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
     }
 
@@ -81,8 +104,8 @@ public class FeedEntriesFragment extends Fragment implements LoaderManager.Loade
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        stagaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, 1);
-        recyclerView.setLayoutManager(stagaggeredGridLayoutManager);
+        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2, 1);
+        recyclerView.setLayoutManager(gridLayoutManager);
 
         SpacesItemDecoration itemDecoration = new SpacesItemDecoration(16);
         recyclerView.addItemDecoration(itemDecoration);

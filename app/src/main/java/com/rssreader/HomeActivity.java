@@ -74,8 +74,8 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        menu.findItem(R.id.menu_search).collapseActionView();
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        menu.findItem(R.id.action_search).collapseActionView();
         setupSearchView(searchView);
         searchView.setQuery("", false);
         searchView.setIconified(true);
@@ -95,6 +95,9 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
             case R.id.action_filter_starred:
                 fragment = FeedListFragment.createInstance(getString(R.string.action_filter_starred), true);
                 Utils.showFragment(this, fragment, R.id.container);
+                break;
+            case android.R.id.home:
+                onBackPressed();
                 break;
         }
         return super.onOptionsItemSelected(item);
